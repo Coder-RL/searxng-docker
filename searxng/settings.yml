@@ -1,11 +1,23 @@
-# see https://docs.searxng.org/admin/settings/settings.html#settings-use-default-settings
+# Use default settings as a base
 use_default_settings: true
+
 server:
   # base_url is defined in the SEARXNG_BASE_URL environment variable, see .env and docker-compose.yml
-  secret_key: "ultrasecretkey"  # change this!
-  limiter: true  # can be disabled for a private instance
+  secret_key: "CHANGE_THIS_TO_A_SECURE_VALUE"  # Update this to a secure key!
+  limiter: false  # Disabled for testing, can be re-enabled later
   image_proxy: true
+  bind_address: "0.0.0.0"  # Allow Open WebUI to access SearXNG
+  port: 8080  # Ensure it's running on the correct port
+
 ui:
   static_use_hash: true
+
 redis:
   url: redis://redis:6379/0
+
+search:
+  formats:
+    - html
+    - json  # Ensure JSON output is enabled for Open WebUI
+
+request_timeout: 5.0  # Increased timeout to prevent connection drops
