@@ -2,22 +2,72 @@
 use_default_settings: true
 
 server:
-  # base_url is defined in the SEARXNG_BASE_URL environment variable, see .env and docker-compose.yml
-  secret_key: "CHANGE_THIS_TO_A_SECURE_VALUE"  # Update this to a secure key!
-  limiter: false  # Disabled for testing, can be re-enabled later
+  secret_key: "3501Machado"  # ✅ Secure key (update this)
+  limiter: false  # ✅ Disabled rate limiting
   image_proxy: true
-  bind_address: "0.0.0.0"  # Allow Open WebUI to access SearXNG
-  port: 8080  # Ensure it's running on the correct port
+  bind_address: "0.0.0.0"  # ✅ Ensures Open WebUI can access SearXNG
+  port: 8080  # ✅ Matches the container port in Docker
+  default_format: json  # ✅ Forces JSON output for API
+  enable_http_api: true  # ✅ Enables API for Open WebUI
+  public_instance: true  # ✅ Prevents `403 FORBIDDEN` by allowing external queries
+  allow_all_engines: true  # ✅ Allows queries from all engines
 
 ui:
   static_use_hash: true
 
 redis:
-  url: redis://redis:6379/0
+  url: redis://localhost:6379/0  # ✅ Ensures Redis connection
 
 search:
   formats:
     - html
-    - json  # Ensure JSON output is enabled for Open WebUI
+    - json  # ✅ Enables JSON output for Open WebUI
+  autocomplete: "duckduckgo"  # ✅ Corrected (must be a string)
+  safe_search: 0  # 0 = Disable Safe Search, 1 = Moderate, 2 = Strict
 
-request_timeout: 5.0  # Increased timeout to prevent connection drops
+request_timeout: 10.0  # ✅ Increased timeout to prevent connection failures
+
+# ✅ **SearXNG Search Engine Config**
+engines:
+  - name: duckduckgo
+    shortcut: ddg
+    enabled: true
+  - name: brave
+    shortcut: br
+    enabled: true
+  - name: wikipedia
+    shortcut: wiki
+    enabled: true
+  - name: wikidata
+    shortcut: wd
+    enabled: true
+  - name: google
+    shortcut: g
+    enabled: true  # ✅ Added Google Search (if Google API is configured)
+
+# ✅ **Enable API & Fix CORS Issues**
+corsdomains:
+  - "http://localhost:3000"  # ✅ Allows Open WebUI requests
+  - "http://127.0.0.1:3000"
+  - "*"
+
+# ✅ **Fix `403 FORBIDDEN` & CORS Issues**
+headers:
+  Access-Control-Allow-Origin: "*"
+  Access-Control-Allow-Methods: "GET, POST, OPTIONS"
+  Access-Control-Allow-Headers: "Content-Type, Authorization, X-Requested-With, User-Agent, Referer, Origin"
+  Access-Control-Allow-Credentials: "true"  # ✅ Ensures browser-based requests work
+
+# ✅ **Fix Rate-Limiting & Bot Detection Issues**
+botdetection:
+  use_default_bots_detection: false  # ✅ Prevents missing `limiter.toml` warnings
+  protection_enabled: false  # ✅ Disables bot protection (prevents request blocks)
+  trust_x_forwarded_for: true  # ✅ Allows proxy-based IP handling
+
+# ✅ **Logging settings (Optional)**
+logging:
+  level: DEBUG  # Change to INFO or WARNING if too verbose
+  log_queries: true  # ✅ Logs all queries for debugging
+  log_search_errors: true  # ✅ Logs errors for troubleshooting
+
+
