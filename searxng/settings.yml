@@ -2,7 +2,7 @@
 use_default_settings: true
 
 server:
-  secret_key: "3501Machado"  # ✅ Secure key (update this)
+  secret_key: "mysecurekey123"  # ✅ This must be a string!
   limiter: false  # ✅ Disabled rate limiting
   image_proxy: true
   bind_address: "0.0.0.0"  # ✅ Ensures Open WebUI can access SearXNG
@@ -16,18 +16,17 @@ ui:
   static_use_hash: true
 
 redis:
-  url: redis://localhost:6379/0  # ✅ Ensures Redis connection
+  url: redis://searxng-redis:6379/0  # ✅ Corrected Redis URL
 
 search:
   formats:
     - html
     - json  # ✅ Enables JSON output for Open WebUI
-  autocomplete: "duckduckgo"  # ✅ Corrected (must be a string)
+  autocomplete: "duckduckgo"
   safe_search: 0  # 0 = Disable Safe Search, 1 = Moderate, 2 = Strict
 
-request_timeout: 10.0  # ✅ Increased timeout to prevent connection failures
+request_timeout: 10.0  # ✅ Prevent connection failures
 
-# ✅ **SearXNG Search Engine Config**
 engines:
   - name: duckduckgo
     shortcut: ddg
@@ -43,31 +42,25 @@ engines:
     enabled: true
   - name: google
     shortcut: g
-    enabled: true  # ✅ Added Google Search (if Google API is configured)
+    enabled: true  # ✅ Added Google Search (if API is configured)
 
-# ✅ **Enable API & Fix CORS Issues**
 corsdomains:
-  - "http://localhost:3000"  # ✅ Allows Open WebUI requests
+  - "http://localhost:3000"
   - "http://127.0.0.1:3000"
   - "*"
 
-# ✅ **Fix `403 FORBIDDEN` & CORS Issues**
 headers:
   Access-Control-Allow-Origin: "*"
   Access-Control-Allow-Methods: "GET, POST, OPTIONS"
   Access-Control-Allow-Headers: "Content-Type, Authorization, X-Requested-With, User-Agent, Referer, Origin"
-  Access-Control-Allow-Credentials: "true"  # ✅ Ensures browser-based requests work
+  Access-Control-Allow-Credentials: "true"  # ✅ Fixes browser requests
 
-# ✅ **Fix Rate-Limiting & Bot Detection Issues**
 botdetection:
-  use_default_bots_detection: false  # ✅ Prevents missing `limiter.toml` warnings
-  protection_enabled: false  # ✅ Disables bot protection (prevents request blocks)
-  trust_x_forwarded_for: true  # ✅ Allows proxy-based IP handling
+  use_default_bots_detection: false
+  protection_enabled: false
+  trust_x_forwarded_for: true
 
-# ✅ **Logging settings (Optional)**
 logging:
-  level: DEBUG  # Change to INFO or WARNING if too verbose
-  log_queries: true  # ✅ Logs all queries for debugging
-  log_search_errors: true  # ✅ Logs errors for troubleshooting
-
-
+  level: DEBUG
+  log_queries: true
+  log_search_errors: true
